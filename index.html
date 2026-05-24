@@ -2,8 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Бичующий студент — Расширения для поиска</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Бичующий студент — Расширения</title>
     <style>
         * {
             margin: 0;
@@ -12,26 +12,26 @@
         }
 
         body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
             color: #eee;
-            padding: 2rem 1rem;
+            padding: 1rem;
             min-height: 100vh;
         }
 
         .container {
-            max-width: 1300px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
-        /* Шапка */
         .header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
         }
 
         .header h1 {
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
             background: linear-gradient(135deg, #ffd89b, #c7e9fb);
             background-clip: text;
             -webkit-background-clip: text;
@@ -41,155 +41,108 @@
 
         .header p {
             color: #a0a0c0;
-            font-size: 1.1rem;
         }
 
-        .badge {
-            display: inline-block;
-            background: #2c2c54;
-            padding: 0.3rem 1rem;
+        .search-box {
+            margin-top: 1.5rem;
+        }
+
+        .search-box input {
+            width: 90%;
+            max-width: 400px;
+            padding: 0.8rem 1.2rem;
             border-radius: 50px;
-            font-size: 0.8rem;
-            margin-top: 1rem;
+            border: none;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+            outline: none;
         }
 
-        /* Карточки задач */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.6rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-chip {
+            background: rgba(255,255,255,0.08);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .filter-chip.active {
+            background: #ffd966;
+            color: #1a1a2e;
+            font-weight: bold;
+        }
+
         .tasks-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2rem;
         }
 
         .task-card {
             background: rgba(30, 30, 50, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .task-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 200, 100, 0.4);
+            border-radius: 20px;
+            padding: 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .task-title {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 600;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
             color: #ffd966;
-            border-left: 4px solid #ffd966;
-            padding-left: 12px;
         }
 
         .task-desc {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #bcbcbc;
-            margin-bottom: 1rem;
-            line-height: 1.4;
+            margin-bottom: 0.8rem;
         }
 
         .buttons-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.75rem;
-            margin-top: 1rem;
+            gap: 0.5rem;
         }
 
         .ext-btn {
-            background: linear-gradient(135deg, #2c2c54, #1e1e3a);
+            background: #2c2c54;
             border: 1px solid #4a4a7a;
             color: #fff;
-            padding: 0.5rem 1rem;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
+            padding: 0.4rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            text-decoration: none;
-        }
-
-        .ext-btn:hover {
-            background: linear-gradient(135deg, #3d3d6b, #2a2a4a);
-            border-color: #ffd966;
-            transform: scale(1.02);
+            gap: 4px;
         }
 
         .ext-btn::before {
             content: "🔌";
-            font-size: 0.8rem;
         }
 
-        /* Секция с полным списком */
-        .full-list {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 28px;
-            padding: 1.8rem;
-            margin-top: 2rem;
-        }
-
-        .full-list h2 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .full-list table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .full-list th, .full-list td {
-            text-align: left;
-            padding: 0.9rem 0.5rem;
-            borde
-
-
-r-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .full-list th {
-            color: #ffd966;
-            font-weight: 600;
-        }
-
-        .install-link {
-            color: #7dd3fc;
-            text-decoration: none;
-            font-size: 0.85rem;
-            background: rgba(125, 211, 252, 0.1);
-            padding: 4px 10px;
-            border-radius: 20px;
-            transition: 0.2s;
-        }
-
-        .install-link:hover {
-            background: rgba(125, 211, 252, 0.3);
-        }
-
-        /* Сноска */
         .footer {
             text-align: center;
-            margin-top: 3rem;
-            font-size: 0.8rem;
+            margin-top: 2rem;
+            font-size: 0.7rem;
             color: #666;
         }
 
-        max-width: 700px {
-            .tasks-grid {
-                grid-template-columns: 1fr;
-            }
-            .full-list {
-                overflow-x: auto;
-            }
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: #888;
         }
     </style>
 </head>
@@ -197,135 +150,100 @@ r-bottom: 1px solid rgba(255,255,255,0.1);
 <div class="container">
     <div class="header">
         <h1>🎓 Бичующий студент</h1>
-        <p>Удобные расширения, чтобы гуглить как профи</p>
-        <div class="badge">🔧 Всё бесплатно | 🚀 Кликай — ставь</div>
-    </div>
-
-    <!-- Блок с карточками задач и кнопками-расширениями -->
-    <div class="tasks-grid">
-        <!-- Карточка 1 -->
-        <div class="task-card">
-            <div class="task-title">🔍 Быстрый поиск по изображению</div>
-            <div class="task-desc">Найти источник фото, похожие картинки, объекты за секунды</div>
-            <div class="buttons-group">
-                <a href="https://chrome.google.com/webstore/detail/search-by-image" target="_blank" class="ext-btn">Search by Image</a>
-                <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.searchngo" target="_blank" class="ext-btn">Google Go (моб.)</a>
-            </div>
-        </div>
-
-        <!-- Карточка 2 -->
-        <div class="task-card">
-            <div class="task-title">📚 Сбор и систематизация</div>
-            <div class="task-desc">Сохраняй ссылки, текст и скриншоты структурированно</div>
-            <div class="buttons-group">
-                <a href="https://raindrop.io/" target="_blank" class="ext-btn">Raindrop.io</a>
-                <a href="https://chrome.google.com/webstore/detail/onetab" target="_blank" class="ext-btn">OneTab</a>
-                <a href="https://chrome.google.com/webstore/detail/fireshot" target="_blank" class="ext-btn">Fireshot</a>
-            </div>
-        </div>
-
-        <!-- Карточка 3 -->
-        <div class="task-card">
-            <div class="task-title">🌍 Иностранные языки</div>
-            <div class="task-desc">Проверка грамматики, быстрая цитация, перевод страниц</div>
-            <div class="buttons-group">
-                <a href="https://www.grammarly.com/" target="_blank" class="ext-btn">Grammarly</a>
-                <a href="https://chrome.google.com/webstore/detail/copy-as-markdown" target="_blank" class="ext-btn">Copy as Markdown</a>
-                <a href="https://translate.google.com/" target="_blank" class="ext-btn">Встроенный перевод (Google)</a>
-            </div>
-        </div>
-
-        <!-- Карточка 4 -->
-        <div class="task-card">
-            <div class="task-title">📶 Слабый интернет / офлайн</div>
-            <div class="task-desc">Облегчённый поиск, доступ к офлайн-базам, сканирование</div>
-            <div class="buttons-group">
-                <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.searchngo" target="_blank" class="ext-btn">Google Go</a>
-                <a href="https://play.google.com/store/apps/details?id=com.lifeshelf.offlinesurvivalmanual" target="_blank" class="ext-btn">Offline Survival Manual</a>
-                <a href="https://www.microsoft.com/en-us/microsoft-lens" target="_blank" class="ext-btn">Microsoft Lens</a>
-            </div>
-        </div>
-
-        <!-- Карточка 5 -->
-        <div class="task-card">
-            <div class="task-title">🕵️ Приватность</div>
-            <div class="ta
-
-
-sk-desc">Поиск без трекинга, оценка защищённости сайтов</div>
-            <div class="buttons-group">
-                <a href="https://play.google.com/store/apps/details?id=com.duckduckgo.mobile.android" target="_blank" class="ext-btn">DuckDuckGo Privacy Browser</a>
-            </div>
-        </div>
-
-        <!-- Карточка 6 -->
-        <div class="task-card">
-            <div class="task-title">🗂️ Управление вкладками</div>
-            <div class="task-desc">Сворачивание вкладок, группировка по темам</div>
-            <div class="buttons-group">
-                <a href="https://chrome.google.com/webstore/detail/onetab" target="_blank" class="ext-btn">OneTab</a>
-                <a href="https://www.tampermonkey.net/" target="_blank" class="ext-btn">Tampermonkey + скрипты</a>
-            </div>
-        </div>
-
-        <!-- Карточка 7 -->
-        <div class="task-card">
-            <div class="task-title">📖 Академические исследования</div>
-            <div class="task-desc">Цитаты в Markdown, снимки страниц, организация закладок</div>
-            <div class="buttons-group">
-                <a href="https://chrome.google.com/webstore/detail/copy-as-markdown" target="_blank" class="ext-btn">Copy as Markdown</a>
-                <a href="https://chrome.google.com/webstore/detail/fireshot" target="_blank" class="ext-btn">Fireshot</a>
-                <a href="https://raindrop.io/" target="_blank" class="ext-btn">Raindrop.io</a>
-            </div>
-        </div>
-
-        <!-- Карточка 8 -->
-        <div class="task-card">
-            <div class="task-title">🎙️ Голосовой поиск</div>
-            <div class="task-desc">Набор запросов голосом, чтение результатов вслух</div>
-            <div class="buttons-group">
-                <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.accessibility.voiceaccess" target="_blank" class="ext-btn">Voice Access</a>
-                <a href="https://www.apple.com/ru/accessibilities/voice-control/" target="_blank" class="ext-btn">Voice Control (iOS/macOS)</a>
-            </div>
+        <p>Расширения для браузера, чтобы учиться и гуглить как профи</p>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Искать расширение...">
         </div>
     </div>
 
-    <!-- Полная таблица по ТЗ (из твоего файла) -->
-    <div class="full-list">
-        <h2>📋 Полный перечень (таблица из задания)</h2>
-        <table>
-            <thead>
-                <tr><th>Задача</th><th>Рекомендуемые инструменты</th><th></th></tr>
-            </thead>
-            <tbody>
-                <tr><td>Быстрый поиск по изображению</td><td>Search by Image, Google Go (моб.)</td><td><a href="#" class="install-link" onclick="return false">🔗 Установить</a></td></tr>
-                <tr><td>Сбор и систематизация</td><td>Raindrop.io, OneTab, Fireshot</td><td><a href="#" class="install-link" onclick="return false">🔗 Установить</a></td></tr>
-                <tr><td>Поиск на иностранных языках</td><td>Grammarly, Copy as Markdown, перевод в Google Go</td><td><a href="#" class="install-link" onclick="return false">🔗 Установить</a></td></tr>
-                <tr><td>Работа в условиях слабого интернета</td><td>Google Go, Offline Survival Manual, Microsoft Lens</td><td><a href="#" class="install-link" onclick="return false">🔗 Установить</a></td></tr>
-                <tr><td>Повышение приватности</td><td>DuckDuckGo Privacy Browser</td><td><a href="#" class="install-link" onclick="return false">🔗 Установить</a></td></tr>
-                <tr><td>Управление большим количеством вкладок</td><td>OneTab, Tampermonkey (скрипты группировки)</td><td><a href="#" class="install-link" onclick="return false">🔗 Установить</a></td></tr>
-                <tr><td>Академические исследования</td><td>Copy as Markdown, Fireshot, Raindrop.io</td><td><a href="#" class="install-link" onclick="return false">🔗 Установить</a></td></tr>
-                <tr><td>Голосовой поиск при физической занятости</td><td>Voice Access, Voice Control</td><td><a href="#" class="install-link" onclick="return false">🔗 Установить</a></td></tr>
-            </tbody>
-        </table>
-        <p style="font-size: 0.75
-
-
-rem; margin-top: 1rem; opacity: 0.6;">*В реальной версии ссылки ведут в магазины расширений (Chrome Web Store / App Store).</p>
+    <div class="filters" id="filters">
+        <span class="filter-chip active" data-cat="all">Все</span>
+        <span class="filter-chip" data-cat="poisk">🔍 Поиск</span>
+        <span class="filter-chip" data-cat="organizer">📚 Органайзер</span>
+        <span class="filter-chip" data-cat="yazyki">🌍 Языки</span>
+        <span class="filter-chip" data-cat="oflayn">📶 Офлайн</span>
+        <span class="filter-chip" data-cat="privacy">🕵️ Приватность</span>
+        <span class="filter-chip" data-cat="vkladki">🗂️ Вкладки</span>
+        <span class="filter-chip" data-cat="academy">📖 Академия</span>
+        <span class="filter-chip" data-cat="golos">🎙️ Голос</span>
     </div>
+
+    <div class="tasks-grid" id="cardsGrid"></div>
 
     <div class="footer">
-        🧠 Сделано бичующим студентом · Кликай на кнопки с расширениями · Бесплатно и без смс
+        🧠 Сделано бичующим студентом · Все расширения бесплатны
     </div>
 </div>
 
 <script>
-    // Можно добавить аналитику или уведомление, что ссылки рабочие. Пока просто заглушка.
-    console.log('Сайт с расширениями готов! Замени #-ссылки на реальные, если нужно.');
+    const extensions = [
+        { name: "Search by Image", task: "Поиск по картинке", desc: "Найти источник фото", url: "https://chrome.google.com/webstore/detail/search-by-image", cat: "poisk" },
+        { name: "Google Go", task: "Поиск по картинке", desc: "Облегчённый поиск", url: "https://play.google.com/store/apps/details?id=com.google.android.apps.searchngo", cat: "poisk" },
+        { name: "Raindrop.io", task: "Закладки", desc: "Умное сохранение ссылок", url: "https://raindrop.io/", cat: "organizer" },
+        { name: "OneTab", task: "Вкладки", desc: "Сворачивает вкладки в список", url: "https://chrome.google.com/webstore/detail/onetab", cat: "vkladki" },
+        { name: "Fireshot", task: "Скриншоты", desc: "Скриншот всей страницы", url: "https://chrome.google.com/webstore/detail/fireshot", cat: "organizer" },
+        { name: "Grammarly", task: "Английский", desc: "Проверка грамматики", url: "https://www.grammarly.com/", cat: "yazyki" },
+        { name: "Copy as Markdown", task: "Цитирование", desc: "Копирует в Markdown", url: "https://chrome.google.com/webstore/detail/copy-as-markdown", cat: "academy" },
+        { name: "Google Translate", task: "Перевод", desc: "Переводит сайты", url: "https://translate.google.com/", cat: "yazyki" },
+        { name: "DuckDuckGo", task: "Приватность", desc: "Поиск без трекинга", url: "https://duckduckgo.com/", cat: "privacy" },
+        { name: "uBlock Origin", task: "Блокировка рекламы", desc: "Чистит сайты", url: "https://chrome.google.com/webstore/detail/ublock-origin", cat: "privacy" },
+        { name: "Tampermonkey", task: "Скрипты", desc: "Автоматизация сайтов", url: "https://www.tampermonkey.net/", cat: "vkladki" },
+        { name: "Zotero", task: "Цитаты", desc: "Менеджер источников", url: "https://www.zotero.org/", cat: "academy" },
+        { name: "Voice Access", task: "Голос", desc: "Управление голосом", url: "https://play.google.com/store/apps/details?id=com.google.android.apps.accessibility.voiceaccess", cat: "golos" }
+    ];
+
+    let currentFilter = "all";
+    let currentSearch = "";
+
+    function renderCards() {
+        const grid = document.getElementById("cardsGrid");
+        if (!grid) return;
+        
+        const filtered = extensions.filter(ext => {
+            const matchFilter = currentFilter === "all" || ext.cat === currentFilter;
+            const matchSearch = currentSearch === "" || ext.name.toLowerCase().includes(currentSearch.toLowerCase());
+            return matchFilter && matchSearch;
+        });
+        
+        if (filtered.length === 0) {
+            grid.innerHTML = '<div class="no-results">😕 Ничего не найдено</div>';
+            return;
+        }
+        
+        let html = "";
+        filtered.forEach(ext => {
+            html += `
+                <div class="task-card">
+                    <div class="task-title">${ext.task}</div>
+                    <div class="task-desc">${ext.desc}</div>
+                    <div class="buttons-group">
+                        <a href="${ext.url}" target="_blank" class="ext-btn">${ext.name}</a>
+                    </div>
+                </div>
+            `;
+        });
+        grid.innerHTML = html;
+    }
+    
+    function init() {
+        renderCards();
+        
+        document.getElementById("searchInput").addEventListener("input", (e) => {
+            currentSearch = e.target.value;
+            renderCards();
+        });
+        
+        document.querySelectorAll(".filter-chip").forEach(chip => {
+            chip.addEventListener("click", () => {
+                document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
+                chip.classList.add("active");
+                currentFilter = chip.getAttribute("data-cat");
+                renderCards();
+            });
+        });
+    }
+    
+    init();
 </script>
 </body>
 </html>
-
-
-
-
