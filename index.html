@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Список полезных расширений</title>
+    <title>Бичующий студент — Расширения</title>
     <style>
         * {
             margin: 0;
@@ -41,10 +41,13 @@
 
         .header p {
             color: #a0a0c0;
+            font-size: clamp(0.9rem, 4vw, 1.1rem);
         }
 
         .search-box {
             margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
         }
 
         .search-box input {
@@ -56,7 +59,16 @@
             background: rgba(255,255,255,0.1);
             color: white;
             font-size: 1rem;
+            backdrop-filter: blur(10px);
             outline: none;
+        }
+
+        .search-box input:focus {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .search-box input::placeholder {
+            color: #888;
         }
 
         .filters {
@@ -74,6 +86,7 @@
             font-size: 0.85rem;
             cursor: pointer;
             transition: 0.2s;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .filter-chip.active {
@@ -82,24 +95,34 @@
             font-weight: bold;
         }
 
+        .filter-chip:hover {
+            background: rgba(255,217,102,0.3);
+        }
+
         .tasks-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 1.2rem;
             margin-bottom: 2rem;
         }
 
         .task-card {
             background: rgba(30, 30, 50, 0.7);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 1.2rem;
             border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.2s;
+        }
+
+        .task-card:hover {
+            transform: translateY(-3px);
         }
 
         .task-title {
             font-size: 1.2rem;
             font-weight: 600;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
             color: #ffd966;
         }
 
@@ -107,25 +130,68 @@
             font-size: 0.85rem;
             color: #bcbcbc;
             margin-bottom: 0.8rem;
+            line-height: 1.4;
+        }
+
+        .task-detail {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-bottom: 0.8rem;
+            padding: 0.5rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            line-height: 1.4;
+        }
+
+        .platform-badge {
+            display: inline-block;
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .platform-pc {
+            background: #2c5f8a;
+            color: white;
+        }
+
+        .platform-mobile {
+            background: #8a2c5f;
+            color: white;
+        }
+
+        .platform-both {
+            background: #2c8a5f;
+            color: white;
         }
 
         .buttons-group {
             display: flex;
             flex-wrap: wrap;
             gap: 0.5rem;
+            margin-top: 0.5rem;
         }
 
         .ext-btn {
-            background: #2c2c54;
+            background: linear-gradient(135deg, #2c2c54, #1e1e3a);
             border: 1px solid #4a4a7a;
             color: #fff;
             padding: 0.4rem 0.8rem;
             border-radius: 30px;
             font-size: 0.7rem;
+            font-weight: 500;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 4px;
+            transition: 0.2s;
+        }
+
+        .ext-btn:hover {
+            background: #3d3d6b;
+            border-color: #ffd966;
         }
 
         .ext-btn::before {
@@ -149,51 +215,196 @@
 <body>
 <div class="container">
     <div class="header">
-        <h1>Инструменты</h1>
+        <h1>🎓 Бичующий студент</h1>
         <p>Расширения для браузера, чтобы учиться и гуглить как профи</p>
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="🔍 Искать расширение...">
+            <input type="text" id="searchInput" placeholder="🔍 Искать расширение или задачу...">
         </div>
     </div>
 
     <div class="filters" id="filters">
         <span class="filter-chip active" data-cat="all">Все</span>
-        <span class="filter-chip" data-cat="poisk">🔍 Поиск</span>
-        <span class="filter-chip" data-cat="organizer">📚 Органайзер</span>
-        <span class="filter-chip" data-cat="yazyki">🌍 Языки</span>
-        <span class="filter-chip" data-cat="oflayn">📶 Офлайн</span>
+        <span class="filter-chip" data-cat="poisk">🔍 Поиск по картинке</span>
+        <span class="filter-chip" data-cat="organizer">📚 Органайзеры</span>
+        <span class="filter-chip" data-cat="yazyki">🌍 Языки и перевод</span>
         <span class="filter-chip" data-cat="privacy">🕵️ Приватность</span>
-        <span class="filter-chip" data-cat="vkladki">🗂️ Вкладки</span>
+        <span class="filter-chip" data-cat="vkladki">🗂️ Вкладки и скрипты</span>
         <span class="filter-chip" data-cat="academy">📖 Академия</span>
-        <span class="filter-chip" data-cat="golos">🎙️ Голос</span>
+        <span class="filter-chip" data-cat="tools">🛠️ Инструменты</span>
     </div>
 
     <div class="tasks-grid" id="cardsGrid"></div>
 
     <div class="footer">
-        🧠 Сделано бичующим студентом · Все расширения бесплатны
+        🧠 Сделано бичующим студентом · Все расширения бесплатны · Кликай → устанавливай
     </div>
 </div>
 
 <script>
     const extensions = [
-        { name: "Search by Image", task: "Поиск по картинке", desc: "Найти источник фото", url: "https://chrome.google.com/webstore/detail/search-by-image", cat: "poisk" },
-        { name: "Google Go", task: "Поиск по картинке", desc: "Облегчённый поиск", url: "https://play.google.com/store/apps/details?id=com.google.android.apps.searchngo", cat: "poisk" },
-        { name: "Raindrop.io", task: "Закладки", desc: "Умное сохранение ссылок", url: "https://raindrop.io/", cat: "organizer" },
-        { name: "OneTab", task: "Вкладки", desc: "Сворачивает вкладки в список", url: "https://chrome.google.com/webstore/detail/onetab", cat: "vkladki" },
-        { name: "Fireshot", task: "Скриншоты", desc: "Скриншот всей страницы", url: "https://chrome.google.com/webstore/detail/fireshot", cat: "organizer" },
-        { name: "Grammarly", task: "Английский", desc: "Проверка грамматики", url: "https://www.grammarly.com/", cat: "yazyki" },
-        { name: "Copy as Markdown", task: "Цитирование", desc: "Копирует в Markdown", url: "https://chrome.google.com/webstore/detail/copy-as-markdown", cat: "academy" },
-        { name: "Google Translate", task: "Перевод", desc: "Переводит сайты", url: "https://translate.google.com/", cat: "yazyki" },
-        { name: "DuckDuckGo", task: "Приватность", desc: "Поиск без трекинга", url: "https://duckduckgo.com/", cat: "privacy" },
-        { name: "uBlock Origin", task: "Блокировка рекламы", desc: "Чистит сайты", url: "https://chrome.google.com/webstore/detail/ublock-origin", cat: "privacy" },
-        { name: "Tampermonkey", task: "Скрипты", desc: "Автоматизация сайтов", url: "https://www.tampermonkey.net/", cat: "vkladki" },
-        { name: "Zotero", task: "Цитаты", desc: "Менеджер источников", url: "https://www.zotero.org/", cat: "academy" },
-        { name: "Voice Access", task: "Голос", desc: "Управление голосом", url: "https://play.google.com/store/apps/details?id=com.google.android.apps.accessibility.voiceaccess", cat: "golos" }
+        { 
+            name: "Search by Image", 
+            task: "Поиск по картинке", 
+            desc: "Ищет источник любого фото за секунды", 
+            detail: "Удобно, когда нужно найти автора мема, оригинал фото или похожие изображения. Работает прямо из контекстного меню.",
+            url: "https://chrome.google.com/webstore/detail/search-by-image", 
+            cat: "poisk",
+            platform: "pc"
+        },
+        { 
+            name: "Google Go", 
+            task: "Поиск по картинке", 
+            desc: "Облегчённый поиск с камерой", 
+            detail: "Идеально для слабых телефонов и плохого интернета. Можно искать по фото прямо с камеры.",
+            url: "https://play.google.com/store/apps/details?id=com.google.android.apps.searchngo", 
+            cat: "poisk",
+            platform: "mobile"
+        },
+        { 
+            name: "TinEye", 
+            task: "Обратный поиск", 
+            desc: "Находит где используется картинка", 
+            detail: "Полезно для проверки уникальности фото или поиска удалённых оригиналов.",
+            url: "https://www.tineye.com/", 
+            cat: "poisk",
+            platform: "both"
+        },
+        { 
+            name: "Raindrop.io", 
+            task: "Умные закладки", 
+            desc: "Сохраняет ссылки с тегами", 
+            detail: "Лучше стандартных закладок: можно добавлять теги, делать папки, искать по тексту внутри сохранённых страниц.",
+            url: "https://raindrop.io/", 
+            cat: "organizer",
+            platform: "both"
+        },
+        { 
+            name: "OneTab", 
+            task: "Сворачивание вкладок", 
+            desc: "Превращает 100 вкладок в один список", 
+            detail: "Спасение для тех, у кого вечно открыто 50+ вкладок. Жмёшь на иконку — всё сворачивается в один список.",
+            url: "https://chrome.google.com/webstore/detail/onetab", 
+            cat: "vkladki",
+            platform: "pc"
+        },
+        { 
+            name: "Fireshot", 
+            task: "Скриншоты страниц", 
+            desc: "Делает скриншот всей страницы целиком", 
+            detail: "Обычный скриншот не может захватить длинную статью. Fireshot склеивает всю страницу в одно изображение или PDF.",
+            url: "https://chrome.google.com/webstore/detail/fireshot", 
+            cat: "tools",
+            platform: "pc"
+        },
+        { 
+            name: "Pocket", 
+            task: "Сохранить на потом", 
+            desc: "Откладывает статьи для чтения офлайн", 
+            detail: "Нашли интересную статью, но нет времени читать? Сохраняете в Pocket — потом прочитаете даже без интернета.",
+            url: "https://getpocket.com/", 
+            cat: "organizer",
+            platform: "both"
+        },
+        { 
+            name: "Grammarly", 
+            task: "Проверка английского", 
+            desc: "Исправляет ошибки прямо при печати", 
+            detail: "Обязательно для тех, кто пишет на английском: рефераты, письма, посты. Подчёркивает ошибки и предлагает исправления.",
+            url: "https://www.grammarly.com/", 
+            cat: "yazyki",
+            platform: "both"
+        },
+        { 
+            name: "Copy as Markdown", 
+            task: "Цитирование для учёбы", 
+            desc: "Копирует ссылки в формате Markdown", 
+            detail: "Идеально для тех, кто пишет в Obsidian, Notion или на GitHub. Копируешь ссылку — вставляется как `[текст](ссылка)`.",
+            url: "https://chrome.google.com/webstore/detail/copy-as-markdown", 
+            cat: "academy",
+            platform: "pc"
+        },
+        { 
+            name: "Google Переводчик", 
+            task: "Перевод страниц", 
+            desc: "Переводит сайты целиком", 
+            detail: "Удобно читать иностранные статьи и форумы. Можно перевести всю страницу или выделенный текст.",
+            url: "https://translate.google.com/", 
+            cat: "yazyki",
+            platform: "both"
+        },
+        { 
+            name: "LanguageTool", 
+            task: "Проверка русского языка", 
+            desc: "Исправляет ошибки в русском тексте", 
+            detail: "Аналог Grammarly, но для русского. Проверяет орфографию, пунктуацию и стиль.",
+            url: "https://languagetool.org/", 
+            cat: "yazyki",
+            platform: "both"
+        },
+        { 
+            name: "DuckDuckGo", 
+            task: "Приватный поиск", 
+            desc: "Не трекает твои запросы", 
+            detail: "Google запоминает всё, что ты ищешь. DuckDuckGo не следит за тобой и не показывает таргетированную рекламу.",
+            url: "https://duckduckgo.com/", 
+            cat: "privacy",
+            platform: "both"
+        },
+        { 
+            name: "uBlock Origin", 
+            task: "Блокировка рекламы", 
+            desc: "Убирает всю рекламу на сайтах", 
+            detail: "Лучший блокировщик рекламы. Чистит YouTube, убирает баннеры, всплывашки — ускоряет загрузку сайтов.",
+            url: "https://chrome.google.com/webstore/detail/ublock-origin", 
+            cat: "privacy",
+            platform: "both"
+        },
+        { 
+            name: "Tampermonkey", 
+            task: "Скрипты для браузера", 
+            desc: "Меняет поведение сайтов под себя", 
+            detail: "Продвинутая штука: можно написать скрипт, который автоматически что-то делает на сайте. Например, убирает ненужные элементы.",
+            url: "https://www.tampermonkey.net/", 
+            cat: "vkladki",
+            platform: "pc"
+        },
+        { 
+            name: "Zotero", 
+            task: "Менеджер источников", 
+            desc: "Собирает и форматирует цитаты", 
+            detail: "Спасает при написании курсовых и дипломов. Сохраняет источники с сайтов, книг, статей — потом сам делает список литературы.",
+            url: "https://www.zotero.org/", 
+            cat: "academy",
+            platform: "pc"
+        },
+        { 
+            name: "Voice Access", 
+            task: "Голосовое управление", 
+            desc: "Управляй браузером голосом", 
+            detail: "Удобно, когда руки заняты или лень печатать. Скажи 'открой YouTube', 'иди наверх', 'нажми на ссылку' — и оно сделает.",
+            url: "https://play.google.com/store/apps/details?id=com.google.android.apps.accessibility.voiceaccess", 
+            cat: "tools",
+            platform: "mobile"
+        },
+        { 
+            name: "Microsoft Lens", 
+            task: "Сканирование документов", 
+            desc: "Превращает фото в PDF", 
+            detail: "Сфоткал конспект с доски или страницу учебника — Microsoft Lens обрежет лишнее, выпрямит и сохранит как PDF.",
+            url: "https://www.microsoft.com/en-us/microsoft-lens", 
+            cat: "tools",
+            platform: "mobile"
+        }
     ];
 
     let currentFilter = "all";
     let currentSearch = "";
+
+    function getPlatformIcon(platform) {
+        if (platform === "pc") return '<span class="platform-badge platform-pc">🖥️ ПК (расширение)</span>';
+        if (platform === "mobile") return '<span class="platform-badge platform-mobile">📱 Мобильное приложение</span>';
+        return '<span class="platform-badge platform-both">💻📱 ПК + Мобилка</span>';
+    }
 
     function renderCards() {
         const grid = document.getElementById("cardsGrid");
@@ -201,12 +412,16 @@
         
         const filtered = extensions.filter(ext => {
             const matchFilter = currentFilter === "all" || ext.cat === currentFilter;
-            const matchSearch = currentSearch === "" || ext.name.toLowerCase().includes(currentSearch.toLowerCase());
+            const matchSearch = currentSearch === "" || 
+                ext.name.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                ext.task.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                ext.desc.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                ext.detail.toLowerCase().includes(currentSearch.toLowerCase());
             return matchFilter && matchSearch;
         });
         
         if (filtered.length === 0) {
-            grid.innerHTML = '<div class="no-results">😕 Ничего не найдено</div>';
+            grid.innerHTML = '<div class="no-results">😕 Ничего не найдено. Попробуй другой запрос или фильтр.</div>';
             return;
         }
         
@@ -215,9 +430,11 @@
             html += `
                 <div class="task-card">
                     <div class="task-title">${ext.task}</div>
-                    <div class="task-desc">${ext.desc}</div>
+                    <div class="task-desc">${ext.name} — ${ext.desc}</div>
+                    <div class="task-detail">💡 ${ext.detail}</div>
+                    <div>${getPlatformIcon(ext.platform)}</div>
                     <div class="buttons-group">
-                        <a href="${ext.url}" target="_blank" class="ext-btn">${ext.name}</a>
+                        <a href="${ext.url}" target="_blank" class="ext-btn">Установить ${ext.name}</a>
                     </div>
                 </div>
             `;
@@ -228,14 +445,18 @@
     function init() {
         renderCards();
         
-        document.getElementById("searchInput").addEventListener("input", (e) => {
-            currentSearch = e.target.value;
-            renderCards();
-        });
+        const searchInput = document.getElementById("searchInput");
+        if (searchInput) {
+            searchInput.addEventListener("input", (e) => {
+                currentSearch = e.target.value;
+                renderCards();
+            });
+        }
         
-        document.querySelectorAll(".filter-chip").forEach(chip => {
+        const chips = document.querySelectorAll(".filter-chip");
+        chips.forEach(chip => {
             chip.addEventListener("click", () => {
-                document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
+                chips.forEach(c => c.classList.remove("active"));
                 chip.classList.add("active");
                 currentFilter = chip.getAttribute("data-cat");
                 renderCards();
